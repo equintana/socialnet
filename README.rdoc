@@ -1,0 +1,3 @@
+Wellcome to Social Net
+
+A RoR based Social Network App.
