@@ -1,0 +1,25 @@
+<% if flash[:errors] %>
+  <p class='error'>
+    please check your form and submit again
+  </p>
+<% end %>
+<% if flash[:notice] %>
+  <p class='notice'><%= flash[:notice] %></p>
+<% end %>
+
+<%= form_for @tweet, :html => { :class => 'form-horizontal' } do |f| %>
+  <div class="control-group">
+    <%= f.label :tweet, :class => 'control-label' %>
+    <div class="controls">
+      <%= f.text_field :tweet, :class => 'text_field' %>
+    </div>
+  </div>
+
+  <div class="form-actions">
+    <%= f.submit nil, :class => 'btn btn-primary' %>
+    <%= link_to t('.cancel',
+                  :default => t("helpers.links.cancel")),
+                  tweets_path,
+                  :class => 'btn' %>
+  </div>
+<% end %>
