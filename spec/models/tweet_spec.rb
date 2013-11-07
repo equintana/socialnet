@@ -6,6 +6,11 @@ describe Tweet, "validations"  do
 
 	it { should ensure_length_of(:tweet).is_at_most(140) }
 
-	it { should validate_uniqueness_of(:tweet).case_insensitive }
+	it "should not let me create repeated messages on the same day" do
+		tweet = FactoryGirl.create(:tweet, tweet: "test message")
+		tweet2 = FactoryGirl.build(:tweet, tweet: "test message")
+		tweet2.valid?.should == false
+		tweet2.should have(1).error_on(:tweet)
+	end
 
 end

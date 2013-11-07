@@ -6,20 +6,20 @@
 <% if flash[:notice] %>
   <p class='notice'><%= flash[:notice] %></p>
 <% end %>
-
-<%= form_for @tweet, :html => { :class => 'form-horizontal' } do |f| %>
-  <div class="control-group">
-    <%= f.label :tweet, :class => 'control-label' %>
-    <div class="controls">
-      <%= f.text_field :tweet, :class => 'text_field' %>
+<div class="well">
+  <%= form_for @tweet, :html => { :class => 'form-horizontal' } do |f| %>
+    <div class="form-group" style="margin-left: 20px">
+      <div class="controls">
+        <%= f.text_area :tweet, size: "50x6" %>
+      </div>
     </div>
-  </div>
 
-  <div class="form-actions">
-    <%= f.submit nil, :class => 'btn btn-primary' %>
-    <%= link_to t('.cancel',
-                  :default => t("helpers.links.cancel")),
-                  tweets_path,
-                  :class => 'btn' %>
-  </div>
-<% end %>
+    <div class="form-group" style="margin-left: 20px">
+      <%= f.submit nil, :class => 'btn btn-primary' %>
+      <%= link_to t('.cancel',
+                    :default => t("helpers.links.cancel")),
+                    tweets_path,
+                    :class => 'btn btn-default' %>
+    </div>
+  <% end %>
+</div>

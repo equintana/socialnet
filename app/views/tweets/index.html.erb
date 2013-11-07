@@ -19,7 +19,7 @@
         <td><%=l tweet.created_at %></td>
         <td>
           <%= link_to t('.edit', :default => t("helpers.links.edit")),
-                      edit_tweet_path(tweet), :class => 'btn btn-mini' %>
+                      edit_tweet_path(tweet), :class => 'btn btn-default' %>
           <%= link_to t('.destroy', :default => t("helpers.links.destroy")),
                       tweet_path(tweet),
                       :method => :delete,
