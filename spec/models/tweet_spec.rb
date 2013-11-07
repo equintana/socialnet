@@ -6,6 +6,6 @@ describe Tweet, "validations"  do
 
 	it { should ensure_length_of(:tweet).is_at_most(140) }
 
-	it { should validate_uniqueness_of(:tweet).case_insensitive.scoped_to(:created_at) }
+	it { should validate_uniqueness_of(:tweet).case_insensitive }
 
 end

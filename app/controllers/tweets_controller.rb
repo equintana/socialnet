@@ -12,34 +12,33 @@ class TweetsController < ApplicationController
 		@tweet = Tweet.new(params[:tweet])
 		if @tweet.save
 			flash[:notice] = 'Successfully Saved'
-			redirect_to tweets_path
+			redirect_to action: "index"
 		else
 			flash[:errors] = @tweet.errors
-			redirect_to new_tweet_path
+			redirect_to action: "new"
 		end
+	end
+
+	def edit
+		@tweet = Tweet.find(params[:id])
 	end
 
 	def show
 		@tweet = Tweet.find(params[:id])
 	end
 
-	def edit
+	def update
 		@tweet = Tweet.find(params[:id])
-  end
-
-  def update
-  	@tweet = Tweet.find(params[:id])
-  	if @tweet.update(params[:tweet])
-  		redirect_to tweets_path
+		if @tweet.update_attributes(params[:tweet])
+  		redirect_to action: :index
   	else
-
+  		redirect_to action: :edit
   	end
-  end
+	end
 
-  def destroy
-    @tweet = Tweet.find(params[:id])
+	def destroy
+		@tweet = Tweet.find(params[:id])
     @tweet.destroy
-    redirect_to tweets_path
-  end
-
+    redirect_to action: :index
+	end
 end
