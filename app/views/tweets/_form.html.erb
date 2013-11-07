@@ -1,7 +1,5 @@
 <% if flash[:errors] %>
-  <p class='error'>
-    please check your form and submit again
-  </p>
+<%= flash[:errors].full_messages.first %>
 <% end %>
 <% if flash[:notice] %>
   <p class='notice'><%= flash[:notice] %></p>

@@ -30,15 +30,18 @@ class TweetsController < ApplicationController
 	def update
 		@tweet = Tweet.find(params[:id])
 		if @tweet.update_attributes(params[:tweet])
-  		redirect_to action: :index
-  	else
-  		redirect_to action: :edit
-  	end
+			flash[:notice] = 'Successfully Updated'
+  			redirect_to action: :index
+	  	else
+	  		flash[:errors] = @tweet.errors
+	  		redirect_to action: :edit
+	  	end
 	end
 
 	def destroy
 		@tweet = Tweet.find(params[:id])
-    @tweet.destroy
-    redirect_to action: :index
+    	@tweet.destroy
+    	flash[:notice] = 'Tweet Deleted'
+    	redirect_to action: :index
 	end
 end

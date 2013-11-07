@@ -16,7 +16,7 @@
       <tr>
         <td><%= link_to tweet.id, tweet_path(tweet) %></td>
         <td><%= tweet.tweet %></td>
-        <td><%=l tweet.created_at %></td>
+        <td><%= tweet.created_at.strftime("%d/%m/%Y") %></td>
         <td>
           <%= link_to t('.edit', :default => t("helpers.links.edit")),
                       edit_tweet_path(tweet), :class => 'btn btn-default' %>
