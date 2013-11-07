@@ -8,7 +8,9 @@
       <p><%= @tweet.tweet %></p>
     </blockquote>
   </div>
-  
+  <div class="image">
+    <%= image_tag @tweet.image_url(:thumb).to_s if @tweet.image_url %>
+  </div>
   <%= link_to t('.back', :default => t("helpers.links.back")),
               tweets_path, :class => 'btn btn-link'  %>
   <%= link_to t('.edit', :default => t("helpers.links.edit")),
