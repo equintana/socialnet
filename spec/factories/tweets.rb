@@ -3,15 +3,14 @@
 FactoryGirl.define do
   factory :tweet do
     tweet "Esto es un tweet de 140 caracteres"
+    association :user
   end
 
   factory :tweet_with_image, parent: :tweet do
-  	tweet "este es el mensaje"
   	image File.open(Rails.root + 'spec/factories/files/avatar.jpg')
   end
 
   factory :tweet_with_pdf, parent: :tweet do
-  	tweet "este es el mensaje"
   	image File.open(Rails.root + 'spec/factories/files/avatar.pdf')
   end
 end
