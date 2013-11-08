@@ -45,4 +45,9 @@ RSpec.configure do |config|
       FileUtils.rm_rf(Dir["#{Rails.root}/spec/support/uploads"])
     end
   end
+
+  # controller testing with devise
+  config.include Devise::TestHelpers, :type => :controller
+  # macros for sing_in, etc
+  config.extend ControllerMacrosDevise, :type => :controller
 end

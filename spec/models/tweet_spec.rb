@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe Tweet, "validations"  do
-
 	it { should validate_presence_of(:tweet) }
 
 	it { should ensure_length_of(:tweet).is_at_most(140) }
@@ -31,5 +30,8 @@ describe Tweet, "validations"  do
 			tweet.should_not be_valid
 		end
 	end
+end
 
+describe Tweet, "associations" do
+	it { should belong_to(:user) }
 end
