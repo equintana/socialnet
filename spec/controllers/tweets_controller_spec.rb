@@ -28,14 +28,20 @@ describe TweetsController, "Actions" do
 		end
 
 		context "with valid params" do
-			it "creates a new tweet" do
+			it "creates a new tweet without image" do
+				expect{
+				  post :create, tweet: @attrs
+				}.to change(Tweet, :count).by(1)
+			end
+
+			it "created a tweet with image" do
 				expect{
 				  post :create, tweet: @attrs
 				}.to change(Tweet, :count).by(1)
 			end
 
 			it "redirect to index" do
-				post :create, tweet: @attrs
+				post :create, tweet: FactoryGirl.attributes_for(:tweet_with_image)
 				response.should redirect_to(tweets_path)
 			end
 
@@ -46,9 +52,9 @@ describe TweetsController, "Actions" do
 		end
 
 		context "with invalid params" do
-			it "redirects to new" do
+			it "renders new" do
 				post :create, tweet: {}
-				response.should redirect_to(new_tweet_path)
+				response.should render_template :new
 			end
 
 			it "have errors" do
@@ -137,12 +143,18 @@ describe TweetsController, "Actions" do
 				put :update, id: @tweet
 				response.should redirect_to(tweets_path)
 			end
+
+			it "changes/add an image" do
+				put :update, id: @tweet, tweet: FactoryGirl.attributes_for(:tweet, tweet: "new tweet edited")
+				@tweet.reload
+				@tweet.tweet.should eq("new tweet edited")
+			end
 		end
 
 		context "with an invalid tweet" do
-			it "redirect to edit" do
+			it "renders edit" do
 				put :update, id: @tweet, tweet: FactoryGirl.attributes_for(:tweet, tweet: nil)
-				response.should redirect_to(edit_tweet_path)
+				response.should render_template :edit
 			end
 		end
 	end

@@ -38,4 +38,11 @@ RSpec.configure do |config|
 
   # factory girl
   # config.include FactoryGirl::Syntax::Methods
+
+  # delete files on test
+  config.after(:each) do
+    if Rails.env.test? || Rails.env.cucumber?
+      FileUtils.rm_rf(Dir["#{Rails.root}/spec/support/uploads"])
+    end
+  end
 end

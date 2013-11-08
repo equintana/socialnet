@@ -15,7 +15,7 @@ class TweetsController < ApplicationController
 			redirect_to action: "index"
 		else
 			flash[:errors] = @tweet.errors
-			redirect_to action: "new"
+			render :new
 		end
 	end
 
@@ -34,7 +34,7 @@ class TweetsController < ApplicationController
   			redirect_to action: :index
 	  	else
 	  		flash[:errors] = @tweet.errors
-	  		redirect_to action: :edit
+	  		render :edit
 	  	end
 	end
 
