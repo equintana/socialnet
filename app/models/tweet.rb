@@ -5,7 +5,7 @@ class Tweet < ActiveRecord::Base
 
 	validates :tweet, presence: true
   validates :tweet, length: { maximum: 140 }
-  validate :unik_message_per_day
+  validate  :unik_message_per_day
 
   belongs_to :user
 

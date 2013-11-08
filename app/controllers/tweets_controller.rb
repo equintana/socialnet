@@ -1,7 +1,9 @@
 class TweetsController < ApplicationController
 
+	before_filter :authenticate_user!
+
 	def index
-		@tweets = Tweet.all
+		@tweets = User.find(current_user.id).tweets
 	end
 
 	def new

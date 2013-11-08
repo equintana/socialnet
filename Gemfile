@@ -35,6 +35,7 @@ group :development, :test do
   gem 'factory_girl_rails'
   gem "better_errors"
   gem "binding_of_caller"
+  gem "database_cleaner"
 end
 
 # To use ActiveModel has_secure_password

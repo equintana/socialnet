@@ -3,191 +3,248 @@ require 'spec_helper'
 describe TweetsController, "Actions" do
 	render_views
 
-	describe "on GET to #index" do
-		it "render the template index" do
-			get :index
-			response.should render_template(:index)
-		end
+	context "user logged in" do
+		# from macros
+		login_user
 
-		it "populates an array of Tweets" do
-			tweet = FactoryGirl.create(:tweet)
-			get :index
-			assigns(:tweets).should eq([tweet])		end
-	end
-
-	describe "on GET to #new" do
-		it "renders the template new" do
-			get :new
-			response.should render_template(:new)
-		end
-	end
-
-	describe "on POST to #create" do
-		before :each do
-			@attrs = FactoryGirl.attributes_for(:tweet)
-		end
-
-		context "with valid params" do
-			it "creates a new tweet without image" do
-				expect{
-				  post :create, tweet: @attrs
-				}.to change(Tweet, :count).by(1)
+		describe "on GET to #index" do
+			it "is logged in" do
+				get :index
+				subject.current_user.should_not be_nil
 			end
 
-			it "created a tweet with image" do
-				expect{
-				  post :create, tweet: @attrs
-				}.to change(Tweet, :count).by(1)
+			it "populates an array of my tweets" do
+				tw1 = FactoryGirl.create(:tweet, tweet: "m1", user: subject.current_user)
+				tw2 = FactoryGirl.create(:tweet, tweet: "m2")
+				get :index
+
+				ids = assigns(:tweets).collect{ |t| t.user.id }
+				expect(ids).to eq( [tw1.user.id] )
+			end
+		end
+
+		describe "on GET to #new" do
+			it "is logged in" do
+				get :new
+				subject.current_user.should_not be_nil
 			end
 
-			it "redirect to index" do
-				post :create, tweet: FactoryGirl.attributes_for(:tweet_with_image)
-				response.should redirect_to(tweets_path)
+			it "renders the template new" do
+				get :new
+				response.should render_template(:new)
+			end
+		end
+
+		describe "on POST to #create" do
+			before :each do
+				@attrs = FactoryGirl.attributes_for(:tweet)
 			end
 
-			it "has a notice" do
+			it "is logged in" do
 				post :create, tweet: @attrs
-				flash[:notice].should_not be_nil
+				subject.current_user.should_not be_nil
+			end
+
+			context "with valid params" do
+				it "creates a new tweet without image" do
+					expect{
+					  post :create, tweet: @attrs
+					}.to change(Tweet, :count).by(1)
+				end
+
+				it "created a tweet with image" do
+					expect{
+					  post :create, tweet: @attrs
+					}.to change(Tweet, :count).by(1)
+				end
+
+				it "redirect to index" do
+					post :create, tweet: FactoryGirl.attributes_for(:tweet_with_image)
+					response.should redirect_to(tweets_path)
+				end
+
+				it "has a notice" do
+					post :create, tweet: @attrs
+					flash[:notice].should_not be_nil
+				end
+			end
+
+			context "with invalid params" do
+				it "renders new" do
+					post :create, tweet: {}
+					response.should render_template :new
+				end
+
+				it "have errors" do
+					post :create, tweet: {}
+					flash[:errors].should_not be_nil
+				end
 			end
 		end
 
-		context "with invalid params" do
-			it "renders new" do
-				post :create, tweet: {}
-				response.should render_template :new
+		describe "on GET to #edit" do
+			it "is logged in" do
+				get :edit, id: FactoryGirl.create(:tweet)
+				subject.current_user.should_not be_nil
 			end
 
-			it "have errors" do
-				post :create, tweet: {}
-				flash[:errors].should_not be_nil
+			context "with valid tweet id" do
+				before :each do
+					@tweet = FactoryGirl.create(:tweet)
+				end
+
+				it "founds a tweet of mine" do
+					get :edit, id: @tweet
+					assigns(:tweet).should_not be_nil
+				end
+
+				it "found the valid tweet" do
+					get :edit, id: @tweet
+					assigns(:tweet).should == @tweet
+				end
+
+				it "renders the edit template" do
+					get :edit, id: @tweet
+					response.should render_template :edit
+				end
+			end
+
+			context "with invalid tweet ID" do
+				it "throws not found exception" do
+					expect{
+					  get :edit, id: 0
+					}.to raise_error(ActiveRecord::RecordNotFound)
+				end
 			end
 		end
-	end
 
-	describe "on GET to #edit" do
-		context "with valid tweet id" do
+		describe "on GET to #show" do
+			it "is logged in" do
+				get :show, id: FactoryGirl.create(:tweet)
+				subject.current_user.should_not be_nil
+			end
+
+			context "with a valid tweet ID" do
+				before :each do
+					@tweet = FactoryGirl.create(:tweet)
+				end
+
+				it "founds a valid tweet" do
+					get :show, id: @tweet
+					assigns(:tweet).should == @tweet
+				end
+
+				it "renders the show template" do
+					get :show, id: @tweet
+					response.should render_template :show
+				end
+			end
+
+			context "with an invalid tweet ID" do
+				it "throws not found exception" do
+					expect{
+					  get :show, id: 0
+					}.to raise_error(ActiveRecord::RecordNotFound)
+				end
+			end
+		end
+
+		describe "on PUT to #update" do
 			before :each do
 				@tweet = FactoryGirl.create(:tweet)
 			end
 
-			it "founds a tweet" do
-				get :edit, id: @tweet
-				assigns(:tweet).should_not be_nil
+			it "is logged in" do
+				put :update, id: FactoryGirl.create(:tweet)
+				subject.current_user.should_not be_nil
 			end
 
-			it "found the valid tweet" do
-				get :edit, id: @tweet
-				assigns(:tweet).should == @tweet
+			context "with a valid tweet" do
+				it "founds a valid tweet" do
+					put :update, id: @tweet
+					assigns(:tweet).should == @tweet
+				end
+
+				it "changes the values of the message" do
+					put :update, id: @tweet, tweet: FactoryGirl.attributes_for(:tweet, tweet: "new tweet edited")
+					@tweet.reload
+					@tweet.tweet.should eq("new tweet edited")
+				end
+
+				it "redirects to index" do
+					@tweet.tweet = "tweet changed"
+					put :update, id: @tweet
+					response.should redirect_to(tweets_path)
+				end
+
+				it "changes/add an image" do
+					put :update, id: @tweet, tweet: FactoryGirl.attributes_for(:tweet, tweet: "new tweet edited")
+					@tweet.reload
+					@tweet.tweet.should eq("new tweet edited")
+				end
 			end
 
-			it "renders the edit template" do
-				get :edit, id: @tweet
-				response.should render_template :edit
-			end
-		end
-
-		context "with invalid tweet ID" do
-			it "throws not found exception" do
-				expect{
-				  get :edit, id: 0
-				}.to raise_error(ActiveRecord::RecordNotFound)
-			end
-		end
-	end
-
-	describe "on GET to #show" do
-		context "with a valid tweet ID" do
-			before :each do
-				@tweet = FactoryGirl.create(:tweet)
-			end
-
-			it "founds a valid tweet" do
-				get :show, id: @tweet
-				assigns(:tweet).should == @tweet
-			end
-
-			it "renders the show template" do
-				get :show, id: @tweet
-				response.should render_template :show
+			context "with an invalid tweet" do
+				it "renders edit" do
+					put :update, id: @tweet, tweet: FactoryGirl.attributes_for(:tweet, tweet: nil)
+					response.should render_template :edit
+				end
 			end
 		end
 
-		context "with an invalid tweet ID" do
-			it "throws not found exception" do
-				expect{
-				  get :show, id: 0
-				}.to raise_error(ActiveRecord::RecordNotFound)
-			end
-		end
-	end
-
-	describe "on PUT to #update" do
-		before :each do
-			@tweet = FactoryGirl.create(:tweet)
-		end
-
-		context "with a valid tweet" do
-			it "founds a valid tweet" do
-				put :update, id: @tweet
-				assigns(:tweet).should == @tweet
+		describe "on DELETE on #destroy" do
+			it "is logged in" do
+				delete :destroy, id: FactoryGirl.create(:tweet)
+				subject.current_user.should_not be_nil
 			end
 
-			it "changes the values of the message" do
-				put :update, id: @tweet, tweet: FactoryGirl.attributes_for(:tweet, tweet: "new tweet edited")
-				@tweet.reload
-				@tweet.tweet.should eq("new tweet edited")
+			context "with a valid id" do
+				before :each do
+					@tweet = FactoryGirl.create(:tweet)
+				end
+
+				it "founds a tweet" do
+					delete :destroy, id: @tweet
+					assigns(:tweet).should == @tweet
+				end
+
+				it "destroys a tweet" do
+					expect{
+					  delete :destroy, id: @tweet
+					}.to change(Tweet, :count).by(-1)
+				end
+
+				it "redirects to index" do
+					delete :destroy, id: @tweet
+					response.should redirect_to(tweets_path)
+				end
 			end
 
-			it "redirects to index" do
-				@tweet.tweet = "tweet changed"
-				put :update, id: @tweet
-				response.should redirect_to(tweets_path)
-			end
-
-			it "changes/add an image" do
-				put :update, id: @tweet, tweet: FactoryGirl.attributes_for(:tweet, tweet: "new tweet edited")
-				@tweet.reload
-				@tweet.tweet.should eq("new tweet edited")
-			end
-		end
-
-		context "with an invalid tweet" do
-			it "renders edit" do
-				put :update, id: @tweet, tweet: FactoryGirl.attributes_for(:tweet, tweet: nil)
-				response.should render_template :edit
+			context "with an invalid id" do
+				it "shows 404" do
+					expect{
+					  delete :destroy, id: 0
+					}.to raise_error(ActiveRecord::RecordNotFound)
+				end
 			end
 		end
 	end
 
-	describe "on DELETE on #destroy" do
-		context "with a valid id" do
-			before :each do
-				@tweet = FactoryGirl.create(:tweet)
-			end
-
-			it "founds a tweet" do
-				delete :destroy, id: @tweet
-				assigns(:tweet).should == @tweet
-			end
-
-			it "destroys a tweet" do
-				expect{
-				  delete :destroy, id: @tweet
-				}.to change(Tweet, :count).by(-1)
-			end
-
-			it "redirects to index" do
-				delete :destroy, id: @tweet
-				response.should redirect_to(tweets_path)
-			end
+	context "user not logged in" do
+		it "redirects to login page from index" do
+			get :index
+			response.should redirect_to new_user_session_path
 		end
 
-		context "with an invalid id" do
-			it "shows 404" do
-				expect{
-				  delete :destroy, id: 0
-				}.to raise_error(ActiveRecord::RecordNotFound)
-			end
+		it "redirects to login page from show" do
+			get :show, id: FactoryGirl.create(:tweet)
+			response.should redirect_to new_user_session_path
 		end
+
+		it "redirects to login page from edit" do
+			get :edit, id: FactoryGirl.create(:tweet)
+			response.should redirect_to new_user_session_path
+		end
+
 	end
 end
