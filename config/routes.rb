@@ -1,7 +1,9 @@
 Socialnet::Application.routes.draw do
 
+  devise_for :users
+
   resources :tweets
-  root :to => "tweets#index"
+  root :to => "pages#index"
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
