@@ -13,5 +13,5 @@ class User < ActiveRecord::Base
 
   has_many :tweets
 
-  mount_uploader :image, ProfilePictureUploaderUploader
+  mount_uploader :profile_img, ProfilePictureUploaderUploader
 end

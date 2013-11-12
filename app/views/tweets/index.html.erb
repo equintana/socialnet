@@ -2,7 +2,7 @@
 <div class="row">
   <div class="col-lg-12">
 
-    <h2>Welcome back, <%= current_user.name.capitalize %></h2>
+    <h2>Welcome back, <%= current_user.name.split.map(&:capitalize).join(' ') %></h2>
 
   </div>
 </div>
@@ -10,12 +10,12 @@
 <!-- little profile + messages -->
 <div class="row">
   <!--profile-->
-  <div class="col-lg-4">
-
+  <div class="col-lg-3">
+    <%= image_tag current_user.profile_img_url(:thumb).to_s if current_user.profile_img_url %>
   </div>
 
   <!--messages-->
-  <div class="col-lg-8">
+  <div class="col-lg-9">
 
     <div class="panel panel-primary">
       <div class="panel-heading">
@@ -23,31 +23,45 @@
       </div>
       <div class="panel-body">
 
-      <% @tweets.each do |tweet| %>
+      <p>
+        <%= link_to "Write a New Tweet", new_tweet_path, :class => 'btn btn-primary' %>
+      </p>
 
-        <div class="tweet">
+      <% if @tweets %>
 
-          <div class="well well-sm">
+        <% @tweets.each do |tweet| %>
 
-            <p>
-              <%= image_tag tweet.image_url(:xsmall).to_s if tweet.image_url %> <%= tweet.tweet %>
-            </p>
-            <div class="options">
-              <%= link_to tweet_path(tweet) do %>
-                <i class="fa fa-eye"></i>
-              <% end %>
+          <div class="tweet">
 
-              <%= link_to edit_tweet_path(tweet) do %>
-                <i class="fa fa-pencil"></i>
-              <% end %>
+            <div class="well well-sm">
 
-              <%= link_to tweet_path(tweet), :method => :delete, :confirm => 'Are you sure?' do %>
-                <i class="fa fa-trash-o"></i>
-              <% end %>
+              <p>
+                <%= image_tag tweet.image_url(:xsmall).to_s if tweet.image_url %> <%= tweet.tweet %>
+              </p>
+              <div class="options">
+                <%= link_to tweet_path(tweet) do %>
+                  <i class="fa fa-eye"></i>
+                <% end %>
+
+                <%= link_to edit_tweet_path(tweet) do %>
+                  <i class="fa fa-pencil"></i>
+                <% end %>
+
+                <%= link_to tweet_path(tweet), :method => :delete, :confirm => 'Are you sure?' do %>
+                  <i class="fa fa-trash-o"></i>
+                <% end %>
+              </div>
+
             </div>
 
           </div>
 
+        <% end %>
+
+      <% else %>
+
+        <div class="well well-sm">
+          <p>You don't have any Tweet yet. Start writting dude!</p>
         </div>
 
       <% end %>
