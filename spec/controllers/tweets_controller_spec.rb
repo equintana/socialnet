@@ -133,7 +133,7 @@ describe TweetsController, "Actions" do
 				end
 			end
 
-			context "with an invalid tweet ID" do
+			context "with an invalid tweet ID or a tweet not mine" do
 				it "throws not found exception" do
 					expect{
 					  get :show, id: 0
@@ -152,7 +152,7 @@ describe TweetsController, "Actions" do
 				subject.current_user.should_not be_nil
 			end
 
-			context "with a valid tweet id" do
+			context "with a valid tweet id of mine" do
 				it "founds a tweet of mine" do
 					put :update, id: @tweet
 					assigns(:tweet).user.id.should eq(subject.current_user.id)
@@ -173,7 +173,7 @@ describe TweetsController, "Actions" do
 				end
 			end
 
-			context "with an invalid tweet" do
+			context "with an invalid tweet or a tweet not mine" do
 				it "renders edit" do
 					put :update, id: @tweet, tweet: FactoryGirl.attributes_for(:tweet, tweet: nil)
 					response.should render_template :edit
@@ -187,7 +187,7 @@ describe TweetsController, "Actions" do
 				subject.current_user.should_not be_nil
 			end
 
-			context "with a valid id" do
+			context "with a valid id of mine" do
 				before :each do
 					@tweet = FactoryGirl.create(:tweet, user: subject.current_user)
 				end
@@ -234,6 +234,5 @@ describe TweetsController, "Actions" do
 			get :edit, id: FactoryGirl.create(:tweet)
 			response.should redirect_to new_user_session_path
 		end
-
 	end
 end

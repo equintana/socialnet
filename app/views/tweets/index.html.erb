@@ -30,15 +30,19 @@
           <div class="well well-sm">
 
             <p>
-              <%= image_tag tweet.image_url(:thumb).to_s if tweet.image_url %> <%= tweet.tweet %>
+              <%= image_tag tweet.image_url(:xsmall).to_s if tweet.image_url %> <%= tweet.tweet %>
             </p>
             <div class="options">
-              <%= link_to tweet_path(tweet), :method => :delete, :confirm => 'Are you sure?' do %>
-                <i class="fa fa-trash-o"></i>
+              <%= link_to tweet_path(tweet) do %>
+                <i class="fa fa-eye"></i>
               <% end %>
 
               <%= link_to edit_tweet_path(tweet) do %>
                 <i class="fa fa-pencil"></i>
+              <% end %>
+
+              <%= link_to tweet_path(tweet), :method => :delete, :confirm => 'Are you sure?' do %>
+                <i class="fa fa-trash-o"></i>
               <% end %>
             </div>
 
