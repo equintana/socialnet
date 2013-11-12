@@ -6,11 +6,11 @@ FactoryGirl.define do
     association :user
   end
 
-  factory :tweet_with_image, parent: :tweet do
-  	image File.open(Rails.root + 'spec/factories/files/avatar.jpg')
+  factory :tweet_with_image, parent: :tweet do | t |
+  	t.image File.open(File.join(Rails.root, '/spec/factories/files/avatar.jpg'))
   end
 
-  factory :tweet_with_pdf, parent: :tweet do
-  	image File.open(Rails.root + 'spec/factories/files/avatar.pdf')
+  factory :tweet_with_pdf, parent: :tweet do | t |
+  	t.image File.open(File.join(Rails.root, '/spec/factories/files/avatar.pdf'))
   end
 end

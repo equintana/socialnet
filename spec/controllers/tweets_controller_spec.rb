@@ -17,7 +17,6 @@ describe TweetsController, "Actions" do
 				tw1 = FactoryGirl.create(:tweet, tweet: "m1", user: subject.current_user)
 				tw2 = FactoryGirl.create(:tweet, tweet: "m2")
 				get :index
-
 				ids = assigns(:tweets).collect{ |t| t.user.id }
 				expect(ids).to eq( [tw1.user.id] )
 			end
@@ -31,7 +30,7 @@ describe TweetsController, "Actions" do
 
 			it "renders the template new" do
 				get :new
-				response.should render_template(:new)
+				response.should render_template :new
 			end
 		end
 
@@ -54,7 +53,7 @@ describe TweetsController, "Actions" do
 
 				it "created a tweet with image" do
 					expect{
-					  post :create, tweet: @attrs
+					  post :create, tweet: FactoryGirl.attributes_for(:tweet_with_image)
 					}.to change(Tweet, :count).by(1)
 				end
 
@@ -84,27 +83,21 @@ describe TweetsController, "Actions" do
 
 		describe "on GET to #edit" do
 			it "is logged in" do
-				get :edit, id: FactoryGirl.create(:tweet)
+				get :edit, id: FactoryGirl.create(:tweet, user: subject.current_user)
 				subject.current_user.should_not be_nil
 			end
 
 			context "with valid tweet id" do
 				before :each do
-					@tweet = FactoryGirl.create(:tweet)
+					@tweet = FactoryGirl.create(:tweet, user: subject.current_user)
+					get :edit, id: @tweet
 				end
 
 				it "founds a tweet of mine" do
-					get :edit, id: @tweet
-					assigns(:tweet).should_not be_nil
-				end
-
-				it "found the valid tweet" do
-					get :edit, id: @tweet
-					assigns(:tweet).should == @tweet
+					assigns(:tweet).user.id.should eq(subject.current_user.id)
 				end
 
 				it "renders the edit template" do
-					get :edit, id: @tweet
 					response.should render_template :edit
 				end
 			end
@@ -120,23 +113,23 @@ describe TweetsController, "Actions" do
 
 		describe "on GET to #show" do
 			it "is logged in" do
-				get :show, id: FactoryGirl.create(:tweet)
+				get :show, id: FactoryGirl.create(:tweet, user: subject.current_user)
 				subject.current_user.should_not be_nil
 			end
 
 			context "with a valid tweet ID" do
 				before :each do
-					@tweet = FactoryGirl.create(:tweet)
-				end
-
-				it "founds a valid tweet" do
-					get :show, id: @tweet
-					assigns(:tweet).should == @tweet
+					@tweet = FactoryGirl.create(:tweet, user: subject.current_user)
 				end
 
 				it "renders the show template" do
 					get :show, id: @tweet
 					response.should render_template :show
+				end
+
+				it "founds a tweet of mine" do
+					get :show, id: @tweet
+					assigns(:tweet).user.id.should eq(subject.current_user.id)
 				end
 			end
 
@@ -151,18 +144,18 @@ describe TweetsController, "Actions" do
 
 		describe "on PUT to #update" do
 			before :each do
-				@tweet = FactoryGirl.create(:tweet)
+				@tweet = FactoryGirl.create(:tweet, user: subject.current_user)
 			end
 
 			it "is logged in" do
-				put :update, id: FactoryGirl.create(:tweet)
+				put :update, id: @tweet
 				subject.current_user.should_not be_nil
 			end
 
-			context "with a valid tweet" do
-				it "founds a valid tweet" do
+			context "with a valid tweet id" do
+				it "founds a tweet of mine" do
 					put :update, id: @tweet
-					assigns(:tweet).should == @tweet
+					assigns(:tweet).user.id.should eq(subject.current_user.id)
 				end
 
 				it "changes the values of the message" do
@@ -172,15 +165,11 @@ describe TweetsController, "Actions" do
 				end
 
 				it "redirects to index" do
-					@tweet.tweet = "tweet changed"
 					put :update, id: @tweet
 					response.should redirect_to(tweets_path)
 				end
 
 				it "changes/add an image" do
-					put :update, id: @tweet, tweet: FactoryGirl.attributes_for(:tweet, tweet: "new tweet edited")
-					@tweet.reload
-					@tweet.tweet.should eq("new tweet edited")
 				end
 			end
 
@@ -194,18 +183,18 @@ describe TweetsController, "Actions" do
 
 		describe "on DELETE on #destroy" do
 			it "is logged in" do
-				delete :destroy, id: FactoryGirl.create(:tweet)
+				delete :destroy, id: FactoryGirl.create(:tweet, user: subject.current_user)
 				subject.current_user.should_not be_nil
 			end
 
 			context "with a valid id" do
 				before :each do
-					@tweet = FactoryGirl.create(:tweet)
+					@tweet = FactoryGirl.create(:tweet, user: subject.current_user)
 				end
 
-				it "founds a tweet" do
-					delete :destroy, id: @tweet
-					assigns(:tweet).should == @tweet
+				it "founds a tweet of mine" do
+					delete :show, id: @tweet
+					assigns(:tweet).user.id.should eq(subject.current_user.id)
 				end
 
 				it "destroys a tweet" do

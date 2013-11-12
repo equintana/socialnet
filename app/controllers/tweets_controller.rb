@@ -3,15 +3,15 @@ class TweetsController < ApplicationController
 	before_filter :authenticate_user!
 
 	def index
-		@tweets = User.find(current_user.id).tweets
+		@tweets = current_user.tweets
 	end
 
 	def new
-		@tweet = Tweet.new
+		@tweet = current_user.tweets.build
 	end
 
 	def create
-		@tweet = Tweet.new(params[:tweet])
+		@tweet = current_user.tweets.build(params[:tweet])
 		if @tweet.save
 			flash[:notice] = 'Successfully Saved'
 			redirect_to action: "index"
@@ -22,15 +22,18 @@ class TweetsController < ApplicationController
 	end
 
 	def edit
-		@tweet = Tweet.find(params[:id])
+		@tweet = current_user.tweets.find(params[:id])
+		if @tweet.user.id != current_user.id
+			redirect_to action: :index
+		end
 	end
 
 	def show
-		@tweet = Tweet.find(params[:id])
+		@tweet = current_user.tweets.find(params[:id])
 	end
 
 	def update
-		@tweet = Tweet.find(params[:id])
+		@tweet = current_user.tweets.find(params[:id])
 		if @tweet.update_attributes(params[:tweet])
 			flash[:notice] = 'Successfully Updated'
   			redirect_to action: :index
@@ -41,7 +44,7 @@ class TweetsController < ApplicationController
 	end
 
 	def destroy
-		@tweet = Tweet.find(params[:id])
+		@tweet = current_user.tweets.find(params[:id])
     	@tweet.destroy
     	flash[:notice] = 'Tweet Deleted'
     	redirect_to action: :index

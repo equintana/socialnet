@@ -9,5 +9,10 @@
  * compiled file, but it's generally better to create a new file per style scope.
  *
  *= require "united.bootstrap.min"
+ *= require font-awesome
  *= require_self
  */
+.options i{
+	font-size: 1.3em;
+	margin-right: 5px;
+}
