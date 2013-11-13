@@ -176,7 +176,7 @@ describe TweetsController, "Actions" do
 				end
 			end
 
-			context "with an invalid tweet or a tweet not mine" do
+			context "with an invalid tweet" do
 				it "renders edit" do
 					put :update, id: @tweet, tweet: FactoryGirl.attributes_for(:tweet, tweet: nil)
 					response.should render_template :edit
