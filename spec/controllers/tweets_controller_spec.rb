@@ -170,6 +170,9 @@ describe TweetsController, "Actions" do
 				end
 
 				it "changes/add an image" do
+					put :update, id: @tweet, tweet: FactoryGirl.attributes_for(:tweet_with_image)
+					@tweet.reload
+					@tweet.image.should_not be_nil
 				end
 			end
 

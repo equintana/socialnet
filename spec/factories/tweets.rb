@@ -7,10 +7,10 @@ FactoryGirl.define do
   end
 
   factory :tweet_with_image, parent: :tweet do | t |
-  	t.image File.open(File.join(Rails.root, '/spec/factories/files/avatar.jpg'))
+    t.image Rack::Test::UploadedFile.new(Rails.root.join("spec/factories/files/avatar.jpg"))
   end
 
   factory :tweet_with_pdf, parent: :tweet do | t |
-  	t.image File.open(File.join(Rails.root, '/spec/factories/files/avatar.pdf'))
+  	t.image Rack::Test::UploadedFile.new(Rails.root.join("spec/factories/files/avatar.pdf"))
   end
 end

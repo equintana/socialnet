@@ -1,5 +1,5 @@
 class Tweet < ActiveRecord::Base
-  attr_accessible :tweet, :image
+  attr_accessible :tweet, :image, :image_cache
 
   mount_uploader :image, TweetImageUploader
 
