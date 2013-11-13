@@ -9,9 +9,13 @@ class User < ActiveRecord::Base
   				  			:profile_img
   # attr_accessible :title, :body
 
+  mount_uploader :profile_img, ProfilePictureUploaderUploader
+
   validates :name, presence: true
 
+  # Relationships
   has_many :tweets
-
-  mount_uploader :profile_img, ProfilePictureUploaderUploader
+  has_many :friendships
+  has_many :friends , through: :friendships
+  
 end

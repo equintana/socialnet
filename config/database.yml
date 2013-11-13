@@ -10,4 +10,4 @@ development:
 test:
   <<: *defaults
   min_message: warning
-  database: share_test
+  database: socialnet_test
