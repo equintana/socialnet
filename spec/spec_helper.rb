@@ -50,4 +50,6 @@ RSpec.configure do |config|
   config.include Devise::TestHelpers, :type => :controller
   # macros for sing_in, etc
   config.extend ControllerMacrosDevise, :type => :controller
+  # anonymus controller
+  config.infer_base_class_for_anonymous_controllers = true
 end

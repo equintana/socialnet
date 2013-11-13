@@ -1,6 +1,6 @@
 Socialnet::Application.routes.draw do
 
-  devise_for :users, :controllers => { registrations: 'users/registrations' }
+  devise_for :users
 
   resources :tweets
   root :to => "pages#index"
