@@ -7,6 +7,8 @@ class Tweet < ActiveRecord::Base
   validates :tweet, length: { maximum: 140 }
   validate  :unik_message_per_day
 
+  belongs_to :user
+
   def unik_message_per_day
     item = Tweet.where('tweet = :message and created_at >= :date', message: self.tweet, date: Date.current).first
     # item.id != self.id because I have to exclude the own tweet from the search
