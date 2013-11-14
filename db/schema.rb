@@ -16,9 +16,9 @@ ActiveRecord::Schema.define(:version => 20131113224731) do
   create_table "friendship_requests", :force => true do |t|
     t.integer  "receiver_user_id"
     t.integer  "sender_user_id"
-    t.string   "status"
-    t.datetime "created_at",       :null => false
-    t.datetime "updated_at",       :null => false
+    t.string   "status",           :default => ""
+    t.datetime "created_at",                       :null => false
+    t.datetime "updated_at",                       :null => false
   end
 
   create_table "friendships", :force => true do |t|

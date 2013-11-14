@@ -3,7 +3,10 @@ Socialnet::Application.routes.draw do
   devise_for :users
 
   resources :tweets
+  resources :friendship_requests, only:[ :index, :create, :update]
+
   root :to => "pages#index"
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
@@ -19,7 +22,7 @@ Socialnet::Application.routes.draw do
   #   resources :products
 
   # Sample resource route with options:
-  #   resources :products do
+  #   resources :products, only:  do
   #     member do
   #       get 'short'
   #       post 'toggle'

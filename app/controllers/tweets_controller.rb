@@ -11,6 +11,7 @@ class TweetsController < ApplicationController
 	end
 
 	def create
+		puts params
 		@tweet = current_user.tweets.build(params[:tweet])
 		if @tweet.save
 			flash[:notice] = 'Successfully Saved'
