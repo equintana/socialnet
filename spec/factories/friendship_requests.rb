@@ -2,8 +2,8 @@
 
 FactoryGirl.define do
   factory :friendship_request do
-    receiver_friend_id 1
-    sender_user_id 2
+    association :receiver_user, factory: :user
+    association :sender_user, factory: :user
     status "pending"
   end
 end
