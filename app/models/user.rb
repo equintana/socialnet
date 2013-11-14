@@ -15,7 +15,11 @@ class User < ActiveRecord::Base
 
   # Relationships
   has_many :tweets
+
   has_many :friendships
-  has_many :friends , through: :friendships
-  
+  has_many :friends, through: :friendships
+
+  has_many :friendship_requests
+  has_many :sent_requests, :class_name => "FriendshipRequest", :foreign_key => "sender_user_id" 
+  has_many :incoming_requests, :class_name => "FriendshipRequest", :foreign_key => "receiver_user_id"  
 end

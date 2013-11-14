@@ -11,7 +11,7 @@ class Friendship < ActiveRecord::Base
   belongs_to :friend, :class_name => "User"
 
   def disallow_self_friendship
-    if friend_id == user_id
+    if self.friend_id == self.user_id
       errors.add(:friend_id, 'You can not be friend with yourself')
     end
   end
