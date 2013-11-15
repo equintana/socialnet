@@ -28,4 +28,11 @@ class FriendshipRequest < ActiveRecord::Base
   end
 
 
+  def self.users_id_with_pending_requests(user)
+     FriendshipRequest.where('sender_user_id = :user_id and status = :status' , 
+                           status: 'pending', user_id: user.id )
+   # FriendshipRequest.select('receiver_user').where('sender_user_id = :user_id and status = :status' ,  status: 'pending', user_id: user.id )
+    
+  end
+
 end

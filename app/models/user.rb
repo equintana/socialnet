@@ -24,8 +24,13 @@ class User < ActiveRecord::Base
   has_many :incoming_requests, :class_name => "FriendshipRequest", :foreign_key => "receiver_user_id"  
 
 
-  def self.not_friends(user)
-    where('id not in (:friends) and id != :user_id', friends: user.friends.collect{ |f| f.id }, user_id: user.id)
+  def not_friends
+    User.where('id != :user_id', user_id: self.id) - self.friends
+  end
+
+  def users_to_send_friendship_requests
+    pending_requests = FriendshipRequest.users_id_with_pending_requests(self)
+    self.not_friends - pending_requests.map(&:receiver_user)
   end
 
 end
