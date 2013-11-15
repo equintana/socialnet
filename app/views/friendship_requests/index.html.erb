@@ -1,0 +1,70 @@
+<div class="row">
+  <div class="col-lg-12">
+    <h2> <%= current_user.name.split.map(&:capitalize).join(' ') %> these are your friendship requests </h2>
+  </div>
+</div>
+
+
+<div class="row"> 
+  
+  <div class="col-lg-9">
+
+   <div class="panel panel-primary">
+    <div class="panel-heading">
+      <h3 class="panel-title"> This persons want be your friend to </h3>
+    </div>
+    <div class="panel-body">
+
+      <% if current_user.incoming_requests %>
+
+        <% current_user.incoming_requests.each do |fr| %>
+
+          <div class="tweet">
+            <div class="well well-sm"> 
+              <%= fr.sender_user.name %>   <%= time_ago_in_words(fr.created_at)%>  &nbsp;&nbsp;
+                "accept" - "decline"
+             </div>
+          </div>
+
+      <% end %>
+      <% else %>
+
+        <div class="well well-sm">
+          <p>Every one are your friends!</p>
+        </div>
+
+      <% end %>
+    </div>
+  </div>
+
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <h3 class="panel-title"> Send Friendship Requests to </h3>
+      </div>
+      <div class="panel-body">
+  
+        <% if @not_friends_without_request %>
+
+          <% @not_friends_without_request.each do |user| %>
+
+            <div class="tweet">
+              <div class="well well-sm"> 
+                <%= user.name %>  user since  <%= time_ago_in_words(user.created_at) %>  &nbsp;&nbsp;
+                <%= link_to "Send request", friendship_requests_path( :receiver_user_id => user) , 
+                :method => :post %>
+              </div>
+            </div>
+
+        <% end %>
+        <% else %>
+
+          <div class="well well-sm">
+            <p>Every one are your friends!</p>
+          </div>
+
+        <% end %>
+      </div>
+    </div>
+
+  </div>
+</div>

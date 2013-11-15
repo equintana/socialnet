@@ -2,8 +2,8 @@ class FriendshipRequestsController < ApplicationController
   
   before_filter :authenticate_user!
 
-  def index
-    @users_not_friends = User.not_friends(current_user)
+  def index   
+    @not_friends_without_request = current_user.users_to_send_friendship_requests 
   end
 
   def create
