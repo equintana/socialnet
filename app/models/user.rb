@@ -22,4 +22,10 @@ class User < ActiveRecord::Base
   has_many :friendship_requests
   has_many :sent_requests, :class_name => "FriendshipRequest", :foreign_key => "sender_user_id" 
   has_many :incoming_requests, :class_name => "FriendshipRequest", :foreign_key => "receiver_user_id"  
+
+
+  def self.not_friends(user)
+    where('id not in (:friends) and id != :user_id', friends: user.friends.collect{ |f| f.id }, user_id: user.id)
+  end
+
 end

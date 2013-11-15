@@ -2,13 +2,11 @@ class FriendshipRequestsController < ApplicationController
   
   before_filter :authenticate_user!
 
-
   def index
-    @users_not_friends =  User.all - current_user.friends
+    @users_not_friends = User.not_friends(current_user)
   end
 
   def create
-    puts params
     @friendship_request = current_user.sent_requests.build(:receiver_user_id => params[:receiver_user_id], :status => 'pending')
     if @friendship_request.save
       flash[:notice] = "Friendship request sended"

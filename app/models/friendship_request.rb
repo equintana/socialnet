@@ -27,4 +27,5 @@ class FriendshipRequest < ActiveRecord::Base
     end
   end
 
+
 end

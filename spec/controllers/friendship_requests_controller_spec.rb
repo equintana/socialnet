@@ -62,14 +62,14 @@ describe FriendshipRequestsController do
 
     describe "on GET to #index" do
       before :each do
-        user_1 = FactoryGirl.create(:user)
-        user_2 = FactoryGirl.create(:user)
+        created_users  = FactoryGirl.create_list(:user, 2)
+        subject.current_user.friends  = FactoryGirl.create_list(:user, 1)
+      #  user_with_friends = FactoryGirl.create(:user_with_friends)
       end
 
-      it "should return a list of users that aren't to send a friendship_request " do
+      it "should return a list of users that aren't friends " do
         get :index
-        ids = assigns(:tweets).collect{ |user| user.id }
-        expect(ids).to eq( [user_1.id, user_2.id] )
+        assigns(:users_not_friends).should_be eq( created_users )
       end
     end
   end
