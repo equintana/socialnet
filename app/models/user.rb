@@ -28,9 +28,14 @@ class User < ActiveRecord::Base
     User.where('id != :user_id', user_id: self.id) - self.friends
   end
 
-  def users_to_send_friendship_requests
-    pending_requests = FriendshipRequest.users_id_with_pending_requests(self)
-    self.not_friends - pending_requests.map(&:receiver_user)
+  def users_to_send_frienship_requests
+    users_i_have_sent_requests = FriendshipRequest.by_sender_user(self).by_status('pending', 'rejected').map(&:receiver_user)
+    users_who_had_sent_requests_to_me = FriendshipRequest.by_receiver_user(self).by_status('pending','rejected').map(&:sender_user)
+
+    self.not_friends - users_i_have_sent_requests - users_who_had_sent_requests_to_me
   end
 
+  def pending_incoming_requests
+    FriendshipRequest.by_receiver_user(self).by_status('pending')
+  end
 end

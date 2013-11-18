@@ -5,19 +5,23 @@ class FriendshipRequest < ActiveRecord::Base
   validates :status, inclusion: { in: %w(pending accepted rejected) }
   validate :disallow_resend_friendship_request
   validate :disallow_self_friendship_request
-  
+  validate :disallow_send_inverse_friendship_request  
   validates :receiver_user, presence: true
 
   # Relationships
   belongs_to :sender_user, :class_name => "User"
   belongs_to :receiver_user, :class_name => "User"
 
+  # Scopes
+  scope :by_status, lambda{ |*statuses| where('status in (?)', statuses) unless statuses.nil? }
+  scope :by_sender_user, lambda{ |sender_user| where(sender_user_id: sender_user.id) unless sender_user.nil? }
+  scope :by_receiver_user, lambda{ |receiver_user| where(receiver_user_id: receiver_user.id) unless receiver_user.nil? }
+
+
   def disallow_resend_friendship_request
-     request = FriendshipRequest.where('status in (:statuses)', statuses: [ 'pending', 'accepted']).
-                                 where('sender_user_id = :sender_user and receiver_user_id = :receiver_user', 
-                                      sender_user: self.sender_user, receiver_user: self.receiver_user).first
-    if request
-      errors.add(:tweet, "You had send already Friendship Request or he/her has accepted you")
+     request = FriendshipRequest.by_status('pending','accepted').by_sender_user(self.sender_user).by_receiver_user(self.receiver_user).first
+    if request && request.id != self.id
+      errors.add(:sender_user, "You had send already Friendship Request or he/her has accepted you")
     end
   end
 
@@ -27,12 +31,12 @@ class FriendshipRequest < ActiveRecord::Base
     end
   end
 
-
-  def self.users_id_with_pending_requests(user)
-     FriendshipRequest.where('sender_user_id = :user_id and status = :status' , 
-                           status: 'pending', user_id: user.id )
-   # FriendshipRequest.select('receiver_user').where('sender_user_id = :user_id and status = :status' ,  status: 'pending', user_id: user.id )
-    
+  def disallow_send_inverse_friendship_request
+    request = FriendshipRequest.by_status('pending','accepted').by_sender_user(self.receiver_user).by_receiver_user(self.sender_user).first
+    if request && request.id != self.id
+      errors.add(:sender_user, "#{self.receiver_user.name} has sent you a friendship request already!")
+    end
   end
+
 
 end
