@@ -34,44 +34,86 @@ describe FriendshipRequestsController do
       subject.current_user.should_not be_nil
     end
 
-    # describe "on POST to #create" do
-    #   context "when valid data" do
-    #     before :each do
-    #       @friend = FactoryGirl.create(:user)
-    #     end
+    describe "on POST to #create" do
+      context "when valid data" do
+        let(:friend) { FactoryGirl.create(:user) }
+       
+        it "send a friendship requests to selected friend" do
+          expect{
+            post :create, receiver_user_id: friend.id
+          }.to change(FriendshipRequest,:count).by(1)
+        end
 
-    #     it "should send a friendship requests to selected friend" do
-    #       expect{
-    #         post :create, receiver_user_id: @friend.id
-    #       }.to change(FriendshipRequest,:count).by(1)
-    #     end
+        it "has a notice if a friendship requests was saved " do
+          post :create, receiver_user_id: friend.id
+          flash[:notice].should_not be_nil
+        end
 
-    #     it "should has a notice if a friendship requests was saved " do
-    #       post :create, receiver_user_id: @friend.id
-    #       flash[:notice].should_not be_nil
-    #     end
-    #   end
-
-    #   context "when invalid data" do
-    #     it "should has a error if a friendship requests wasn't saved " do
-    #       post :create, receiver_user_id: 999
-    #       flash[:error].should_not be_nil
-    #     end
-    #   end
-    # end
-
-    describe "on GET to #index" do
-      before :each do
-        created_users = FactoryGirl.create_list(:user, 2)
-        #subject.current_user.friends  = FactoryGirl.create_list(:user, 1)
+        it "redirect to #index after create" do
+          post :create, receiver_user_id: friend.id
+          response.should redirect_to(friendship_requests_path)
+        end
       end
 
-      it "should return a list of users that aren't friends and the users haven't send a requests" do
+      context "when invalid data" do
+        it "has a error if a friendship requests wasn't saved " do
+          post :create, receiver_user_id: 999
+          flash[:error].should_not be_nil
+        end
+      end
+    end
+
+    describe "on GET to #index" do
+      let!(:not_friend_1) { FactoryGirl.create(:user) } 
+      let!(:not_friend_2) { FactoryGirl.create(:user) }
+      let!(:not_friend_3) { FactoryGirl.create(:user) } 
+
+      before do
+        FactoryGirl.create(:friendship_request, sender_user: subject.current_user, receiver_user: not_friend_1)
+        FactoryGirl.create(:friendship_request, sender_user: not_friend_3 , receiver_user: subject.current_user)
+      end
+
+      it "returns list of users that aren't friends and the users haven't send a requests" do
         get :index
-        assigns(:users_not_friends).should_be eq( created_users )
+        assigns(:users_to_send_frienship_requests).should include( not_friend_2 )
+      end
+
+      it "dont show users who I sent a requests" do
+        get :index
+        assigns(:users_to_send_frienship_requests).should_not include( not_friend_1 )
+      end
+
+      it "dont show users who sent me requests" do
+        get :index
+        assigns(:users_to_send_frienship_requests).should_not include( not_friend_3 )
+      end
+    end
+
+    describe "on PUT to #update" do
+      let!(:not_friend_1) { FactoryGirl.create(:user) } 
+
+      before do
+        @friendship_request = FactoryGirl.create(:friendship_request, sender_user: subject.current_user, receiver_user: not_friend_1)
+      end
+
+      it "update the requests' status" do
+        put :update, id: @friendship_request, friendship_request: FactoryGirl.attributes_for(:friendship_request, status: 'accepted')
+        @friendship_request.reload
+        @friendship_request.status.should eq('accepted')
+      end
+
+      it "redirects to index" do
+        put :update, id: @friendship_request
+        response.should redirect_to(friendship_requests_path)
+      end
+
+      it "create a friendship if request was accepted" do
+        put :update, id: @friendship_request, friendship_request: FactoryGirl.attributes_for(:friendship_request, status: 'accepted')
+        subject.current_user.friends.count.should eq(1)
       end
 
     end
+
   end
 
 end
