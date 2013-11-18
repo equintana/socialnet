@@ -46,7 +46,12 @@
           </ul>
           <% if user_signed_in? %>
             <ul class="nav navbar-nav navbar-right">
-            <li>
+              <li>
+                <%= link_to friendship_requests_path do %>
+                  <i class="fa fa-users"> <strong>Requests</strong> </i>
+                <% end %>
+              </li>
+              <li>
                 <%= link_to "Edit Profile", edit_user_registration_path %>
               </li>
               <li>

@@ -3,7 +3,7 @@ Socialnet::Application.routes.draw do
   devise_for :users
 
   resources :tweets
-  resources :friendship_requests, only:[ :index, :create, :update]
+  resources :friendship_requests, only:[ :index, :create, :update ]
 
   root :to => "pages#index"
 
