@@ -1,0 +1,47 @@
+
+<h3> <%= @user.name.split.map(&:capitalize).join(' ') %> </h3>
+ <div class="col-lg-3">
+    <%= image_tag @user.profile_img_url(:thumb).to_s if @user.profile_img_url %>
+</div>
+
+<table  cellpadding="5">
+  <tr>
+    <td> E-mail: </td>
+    <td>
+        <%= @user.email%> 
+    </td>
+  </tr>
+  <tr>
+    <td> User since: </td>
+    <td>
+       <%= time_ago_in_words(@user.created_at)%>
+    </td>
+  </tr>
+</table> 
+
+<p style="clear:both;"></p>
+<div class="row">
+  <div class="col-lg-9">
+
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <h3 class="panel-title">Friends</h3>
+      </div>
+      <div class="panel-body">
+        <% @user.all_friends.each do |user| %>
+
+          <div class="tweet">
+            <div class="well well-sm">
+              <%= link_to user_path(user), :method => :get do %>
+                 <%= user.name %> 
+              <% end %>
+            </div>
+          </div>
+
+        <% end %>
+      </div>
+    </div>
+
+  </div>
+
+</div>

@@ -1,6 +1,6 @@
 <div class="row">
   <div class="col-lg-12">
-    <h2> <%= current_user.name.split.map(&:capitalize).join(' ') %> these are your friendship requests </h2>
+    <h2> Friendship requests </h2>
   </div>
 </div>
 
@@ -9,7 +9,7 @@
   
   <div class="col-lg-9">
 
-   <div class="panel panel-primary">
+  <div class="panel panel-primary">
     <div class="panel-heading">
       <h3 class="panel-title"> Persons who want be your friend </h3>
     </div>
@@ -18,17 +18,31 @@
       <% if current_user.pending_incoming_requests %>
 
         <% current_user.pending_incoming_requests.each do |fr| %>
-
           <div class="tweet">
             <div class="well well-sm"> 
-              <%= fr.sender_user.name %>  -  <%= time_ago_in_words(fr.created_at)%>  &nbsp;&nbsp;
-                <%=link_to friendship_requests_path( @fr, {:status => 'accepted'}), :method => :put do %>
-                  <i class="fa fa-check"> Accept </i>
-                <% end %>
-                &nbsp; &nbsp;
-                <%= link_to "Not now", friendship_requests_path( @fr, {:status => 'rejected'} ), :method => :put %>
-             </div>
+
+              <table  cellpadding="5">
+                <tr>
+                  <td>
+                      <strong><%= fr.sender_user.name %> </strong>  <%= time_ago_in_words(fr.created_at)%>
+                  </td>
+                  <td>
+                    <%= form_for fr , :html => { :class => 'form-inline' } do |f|  %>
+                      <%= f.hidden_field :status, value: 'accepted' %>
+                      <%= f.submit "Accept", class: "submit btn btn-primary btn-xs" %>
+                    <% end %>
+                  </td>
+                  <td>
+                    <%= form_for fr , :html => { :class => 'form-inline' } do |f| %>
+                      <%= f.hidden_field :status, value: 'rejected' %>
+                      <%= f.submit "Not now", class: "button btn btn-xs" %>
+                    <% end %>
+                  </td>
+                </tr>
+              </table> 
+            </div>
           </div>
+
       <% end %>
       <% else %>
           <p> No new requests </p>

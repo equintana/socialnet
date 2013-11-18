@@ -96,20 +96,44 @@ describe FriendshipRequestsController do
         @friendship_request = FactoryGirl.create(:friendship_request, sender_user: subject.current_user, receiver_user: not_friend_1)
       end
 
-      it "update the requests' status" do
-        put :update, id: @friendship_request, friendship_request: FactoryGirl.attributes_for(:friendship_request, status: 'accepted')
-        @friendship_request.reload
-        @friendship_request.status.should eq('accepted')
+      context "valid data" do
+        it "update the requests' status" do
+          put :update, id: @friendship_request, friendship_request: FactoryGirl.attributes_for(:friendship_request, status: 'accepted')
+          @friendship_request.reload
+          @friendship_request.status.should eq('accepted')
+        end
+
+        it "redirects to index" do
+          put :update, id: @friendship_request, friendship_request: FactoryGirl.attributes_for(:friendship_request, status: 'accepted')
+          response.should redirect_to(friendship_requests_path)
+        end
+
+        it "create a friendship if request was accepted" do
+          put :update, id: @friendship_request, friendship_request: FactoryGirl.attributes_for(:friendship_request, status: 'accepted')
+          subject.current_user.friends.count.should eq(1)
+        end
       end
 
-      it "redirects to index" do
-        put :update, id: @friendship_request
-        response.should redirect_to(friendship_requests_path)
-      end
+      context "in valid data" do
+        before do
+          @friendship_request_attrs = FactoryGirl.attributes_for(:friendship_request, status: '')
+        end
 
-      it "create a friendship if request was accepted" do
-        put :update, id: @friendship_request, friendship_request: FactoryGirl.attributes_for(:friendship_request, status: 'accepted')
-        subject.current_user.friends.count.should eq(1)
+        it "no create a friendship " do
+          put :update, id: @friendship_request, friendship_request: @friendship_request_attrs
+          subject.current_user.friends.count.should eq(0)
+        end
+
+        it "has a error message" do
+          put :update, id: @friendship_request, friendship_request: @friendship_request_attrs
+          flash[:error].should_not be_nil
+        end
+
+         it "has a error message" do
+          put :update, id: @friendship_request, friendship_request: @friendship_request_attrs
+          response.should redirect_to(friendship_requests_path)
+        end
+
       end
 
     end

@@ -50,3 +50,22 @@ end
 describe Tweet, "associations" do
 	it { should belong_to(:user) }
 end
+
+describe Tweet, "class method" do
+  let!(:user_1) { FactoryGirl.create(:user) } 
+  let!(:user_2) { FactoryGirl.create(:user) }
+
+  let!(:tweet_user_1) {  FactoryGirl.create(:tweet, user: user_1) }
+  let!(:tweet_user_2) {  FactoryGirl.create(:tweet, user: user_2) }
+
+  context "scopes" do
+    it ".by_id_users one argument" do
+      Tweet.by_id_users([user_1.id]).count.should eq(1)
+    end
+
+    it ".by_id_users two argument" do
+      Tweet.by_id_users([user_1.id,user_2 ]).should include(tweet_user_1, tweet_user_2)
+    end
+  end
+end
+

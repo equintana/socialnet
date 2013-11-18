@@ -17,26 +17,18 @@ class FriendshipRequestsController < ApplicationController
     end
   end
 
-
   def update
-    p "params: #{params}"
-
+    data = params[:friendship_request]
     @friendship_request = FriendshipRequest.find(params[:id])
-    if @friendship_request.update_attributes(params[:friendship_request])
-      if @friendship_request.status == "accepted"
-        create_friendship(@friendship_request)
-      end
-      redirect_to friendship_requests_path
-    else
-       flash[:errors] = @friendship_request.errors
-      redirect_to friendship_requests_path
-    end
-  end
 
-  private
-  def create_friendship(friendship_request)
-    @friendship = Friendship.new({user_id: friendship_request.sender_user_id, friend_id: friendship_request.receiver_user_id })
-    @friendship.save
+    FriendshipRequest.transaction do
+      if @friendship_request.update_attributes(:status => data[:status])
+        redirect_to friendship_requests_path
+      else
+        flash[:error] = @friendship_request.errors
+        redirect_to friendship_requests_path
+      end
+    end
   end
 
 end

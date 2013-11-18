@@ -8,6 +8,16 @@ describe TweetsController, "Actions" do
 		login_user
 
 		describe "on GET to #index" do
+			let(:friend){ FactoryGirl.create(:user) }
+			let(:not_friend){ FactoryGirl.create(:user) }
+
+			before :each do
+        FactoryGirl.create(:friendship, user:  subject.current_user, friend: friend)
+        @my_tw = FactoryGirl.create(:tweet, tweet: "my tweet", user: subject.current_user) 
+        @friend_tw = FactoryGirl.create(:tweet, tweet: "friend tweet", user: friend) 
+        @not_friend_tw = FactoryGirl.create(:tweet, tweet: "not friend tweet", user: not_friend) 
+			end
+
 			it "is logged in" do
 				get :index
 				subject.current_user.should_not be_nil
@@ -18,8 +28,13 @@ describe TweetsController, "Actions" do
 				tw2 = FactoryGirl.create(:tweet, tweet: "m2")
 				get :index
 				ids = assigns(:tweets).collect{ |t| t.user.id }
-				expect(ids).to eq( [tw1.user.id] )
+				expect(ids).to include( tw1.user.id )
 			end
+
+      it "return my tweets and twets of my friends" do
+        get :index
+        assigns(:tweets).should include(@my_tw, @friend_tw)
+      end
 		end
 
 		describe "on GET to #new" do

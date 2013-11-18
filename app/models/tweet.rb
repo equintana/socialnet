@@ -9,6 +9,10 @@ class Tweet < ActiveRecord::Base
 
   belongs_to :user
 
+  # Scopes
+  scope :by_id_users, lambda{ |id_users| where('user_id in (?)', id_users) unless id_users.nil? }
+  
+
   def unik_message_per_day
     item = Tweet.where('tweet = :message and created_at >= :date', message: self.tweet, date: Date.current).first
     # item.id != self.id because I have to exclude the own tweet from the search
@@ -19,4 +23,5 @@ class Tweet < ActiveRecord::Base
     end
   end
 
+  
 end

@@ -17,6 +17,9 @@ class FriendshipRequest < ActiveRecord::Base
   scope :by_sender_user, lambda{ |sender_user| where(sender_user_id: sender_user.id) unless sender_user.nil? }
   scope :by_receiver_user, lambda{ |receiver_user| where(receiver_user_id: receiver_user.id) unless receiver_user.nil? }
 
+  # Callbacks
+  after_save :create_friendship
+
 
   def disallow_resend_friendship_request
      request = FriendshipRequest.by_status('pending','accepted').by_sender_user(self.sender_user).by_receiver_user(self.receiver_user).first
@@ -38,5 +41,11 @@ class FriendshipRequest < ActiveRecord::Base
     end
   end
 
+  def create_friendship
+    if self.status == "accepted"
+      @friendship = Friendship.new({user_id: self.sender_user_id, friend_id: self.receiver_user_id })
+      @friendship.save
+    end
+  end
 
 end

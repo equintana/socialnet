@@ -3,7 +3,8 @@ class TweetsController < ApplicationController
 	before_filter :authenticate_user!
 
 	def index
-		@tweets = current_user.tweets
+	#	@tweets = current_user.tweets
+		@tweets = current_user.timeline
 	end
 
 	def new

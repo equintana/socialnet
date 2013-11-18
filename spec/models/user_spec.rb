@@ -39,7 +39,7 @@ describe User, "instance methods" do
     let!(:not_friend_3) { FactoryGirl.create(:user) } 
 
     before do
-      FactoryGirl.create(:friendship_request, sender_user: current_user, receiver_user: not_friend_1)
+      @friendship_request = FactoryGirl.create(:friendship_request, sender_user: current_user, receiver_user: not_friend_1)
     end
 
     it "users who i can send friendship requests" do
@@ -59,6 +59,12 @@ describe User, "instance methods" do
       not_friend_1.users_to_send_frienship_requests.should_not include(current_user)
     end
 
+    it "users who can not send me friendship requests if friendship_request rejected" do
+       @friendship_request.status = "rejected"
+       @friendship_request.save
+       current_user.users_to_send_frienship_requests.should include(not_friend_1, not_friend_2, not_friend_3)
+    end
+
   end
 
   context "#pending_incoming_requests" do
@@ -74,4 +80,41 @@ describe User, "instance methods" do
       current_user.pending_incoming_requests.count.should eq(1)
     end
   end
+
+  context "#all_friends" do
+    let!(:friend_1) { FactoryGirl.create(:user) } 
+    let!(:friend_2) { FactoryGirl.create(:user) }
+    let!(:not_friend) { FactoryGirl.create(:user) }
+
+     before do
+      FactoryGirl.create(:friendship, user: current_user, friend: friend_1)
+      FactoryGirl.create(:friendship, user: friend_2, friend: current_user)
+    end
+
+    it "include my friends" do
+      current_user.all_friends.should include(friend_1, friend_2)
+    end 
+
+    it "not include user who are not friends" do
+      current_user.all_friends.should_not include(not_friend)
+    end
+  end
+
+  context "#timeline" do
+    let(:friend) { FactoryGirl.create(:user) }
+    let(:not_friend) { FactoryGirl.create(:user) }
+
+    let(:my_tweet){  FactoryGirl.create(:tweet, user: current_user) }
+    let(:friend_tweet){  FactoryGirl.create(:tweet, user: friend) }
+    let(:not_friend_tweet){  FactoryGirl.create(:tweet, user: not_friend) }
+    
+    before do
+      FactoryGirl.create(:friendship, user: current_user, friend: friend)
+    end
+
+    it "tweets of my timeline" do
+      current_user.timeline.should include(my_tweet, friend_tweet)
+    end
+  end
+
 end
