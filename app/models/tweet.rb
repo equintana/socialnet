@@ -1,5 +1,5 @@
 class Tweet < ActiveRecord::Base
-  attr_accessible :tweet, :image, :image_cache
+  attr_accessible :tweet, :image, :image_cache, :remote_image_url
 
   mount_uploader :image, TweetImageUploader
 
@@ -11,7 +11,7 @@ class Tweet < ActiveRecord::Base
 
   # Scopes
   scope :by_id_users, lambda{ |id_users| where('user_id in (?)', id_users) unless id_users.nil? }
-  
+
 
   def unik_message_per_day
     item = Tweet.where('tweet = :message and created_at >= :date', message: self.tweet, date: Date.current).first
@@ -23,5 +23,5 @@ class Tweet < ActiveRecord::Base
     end
   end
 
-  
+
 end

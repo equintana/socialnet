@@ -19,6 +19,11 @@
       </div>
 
       <div class="form-group">
+        <%= f.label :remote_image_url, "paste an image URL" %>
+        <%= f.text_field :remote_image_url %>
+      </div>
+
+      <div class="form-group">
         <%= f.submit nil, :class => 'btn btn-primary' %>
         <%= link_to t('.cancel',
                       :default => t("helpers.links.cancel")),
