@@ -34,13 +34,14 @@
 
             <div class="well well-sm">
               <%= link_to user_path(tweet.user), :method => :get do %>
-                 <%= tweet.user.name %> 
+                 <%= tweet.user.name %>
               <% end %>
               &nbsp;
               <span class="badge"><%= time_ago_in_words(tweet.created_at) %></span>
-            
+
               <p>
-                <%= image_tag tweet.image_url(:xsmall).to_s if tweet.image_url %> <%= tweet.tweet %>
+                <%= image_tag tweet.image_url(:xsmall).to_s if tweet.image_url %>
+                <%= auto_link tweet.tweet %>
               </p>
               <div class="options">
                 <%= link_to tweet_path(tweet) do %>
