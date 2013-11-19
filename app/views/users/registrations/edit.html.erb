@@ -18,6 +18,7 @@
         <%= f.label :profile_img, :class => "col-sm-3 control-label"  %>
         <div class="col-sm-9">
           <%= f.file_field :profile_img %>
+          <%= f.check_box :use_gravatar %> <%= f.label :use_gravatar, "or use Gravatar" %>
         </div>
       </div>
 

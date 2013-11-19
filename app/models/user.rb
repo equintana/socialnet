@@ -6,7 +6,7 @@ class User < ActiveRecord::Base
 
   # Setup accessible (or protected) attributes for your model
   attr_accessible :name, :email, :password, :password_confirmation, :remember_me,
-  				  			:profile_img
+  				  			:profile_img, :use_gravatar
   # attr_accessible :title, :body
 
   mount_uploader :profile_img, ProfilePictureUploaderUploader

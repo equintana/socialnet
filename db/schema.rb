@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131113224731) do
+ActiveRecord::Schema.define(:version => 20131119214714) do
 
   create_table "friendship_requests", :force => true do |t|
     t.integer  "receiver_user_id"
@@ -51,6 +51,7 @@ ActiveRecord::Schema.define(:version => 20131113224731) do
     t.string   "profile_img"
     t.datetime "created_at",                             :null => false
     t.datetime "updated_at",                             :null => false
+    t.boolean  "use_gravatar"
   end
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true

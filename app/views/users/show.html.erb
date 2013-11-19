@@ -1,7 +1,11 @@
 
 <h3> <%= @user.name.split.map(&:capitalize).join(' ') %> </h3>
  <div class="col-lg-3">
+  <% if @user.use_gravatar %>
+    <%= image_tag avatar_url @user %>
+  <% else %>
     <%= image_tag @user.profile_img_url(:thumb).to_s if @user.profile_img_url %>
+  <% end %>
 </div>
 
 <table  cellpadding="5">
