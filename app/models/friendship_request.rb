@@ -43,6 +43,7 @@ class FriendshipRequest < ActiveRecord::Base
 
   def create_friendship
     if self.status == "accepted"
+      UserNotifications.accepted_friend(receiver_user, sender_user).deliver
       @friendship = Friendship.new({user_id: self.sender_user_id, friend_id: self.receiver_user_id })
       @friendship.save
     end
