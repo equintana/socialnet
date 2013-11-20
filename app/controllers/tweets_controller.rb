@@ -5,6 +5,7 @@ class TweetsController < ApplicationController
 	def index
 	#	@tweets = current_user.tweets
 		@tweets = current_user.timeline
+		@tweet = current_user.tweets.build
 	end
 
 	def new
@@ -13,13 +14,24 @@ class TweetsController < ApplicationController
 
 	def create
 		@tweet = current_user.tweets.build(params[:tweet])
-		if @tweet.save
-			flash[:notice] = 'Successfully Saved'
-			redirect_to action: "index"
-		else
-			flash[:errors] = @tweet.errors
-			render :new
-		end
+
+    if @tweet.save
+      redirect_to action: :index, notice: 'Your tweet was saved' unless request.xhr?
+    else
+      render action: "new" unless request.xhr?
+    end
+
+		# respond_to do |format|
+  #   if @tweet.save
+  #     format.html { redirect_to action: :index, notice: 'Your tweet was saved' }
+  #     format.js
+  #     format.json { render json: @tweet, status: :created, location: @tweet }
+  #   else
+  #     format.html { render action: "new" }
+  #     format.json { render json: @tweet.errors, status: :unprocessable_entity }
+  #   end
+  # end
+
 	end
 
 	def edit
