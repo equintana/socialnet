@@ -12,9 +12,3 @@
 //
 //= require jquery
 //= require jquery_ujs
-//= require_self
-$(function(){
-	$("#new_tweet").on("ajax:success", function(e, data, status, xhr){
-		$("#tweet_tweet").val();
-	});
-});

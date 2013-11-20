@@ -1,0 +1,27 @@
+<ul>
+  <% pending_requests.each do |fr| %>
+  <li>
+    <div class="pending_request well well-sm">
+      <h5><%= fr.sender_user.name %>, <%= time_ago_in_words(fr.created_at) %> ago</h5>
+      <div>
+        <table>
+          <tr>
+            <td>
+              <%= form_for fr , :html => { :class => 'form-inline' } do |f|  %>
+                <%= f.hidden_field :status, value: 'accepted' %>
+                <%= f.submit "Accept", class: "submit btn btn-primary btn-xs" %>
+              <% end %>
+            </td>
+            <td>
+              <%= form_for fr , :html => { :class => 'form-inline' } do |f| %>
+                <%= f.hidden_field :status, value: 'rejected' %>
+                <%= f.submit "Not now", class: "button btn btn-xs" %>
+              <% end %>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </li>
+  <% end %>
+</ul>

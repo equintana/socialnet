@@ -4,72 +4,29 @@
   </div>
 </div>
 
-
-<div class="row"> 
-  
+<div class="row">
   <div class="col-lg-9">
-
-  <div class="panel panel-primary">
-    <div class="panel-heading">
-      <h3 class="panel-title"> Persons who want be your friend </h3>
-    </div>
-    <div class="panel-body">
-
-      <% if current_user.pending_incoming_requests %>
-
-        <% current_user.pending_incoming_requests.each do |fr| %>
-          <div class="tweet">
-            <div class="well well-sm"> 
-
-              <table  cellpadding="5">
-                <tr>
-                  <td>
-                      <strong><%= fr.sender_user.name %> </strong>  <%= time_ago_in_words(fr.created_at)%>
-                  </td>
-                  <td>
-                    <%= form_for fr , :html => { :class => 'form-inline' } do |f|  %>
-                      <%= f.hidden_field :status, value: 'accepted' %>
-                      <%= f.submit "Accept", class: "submit btn btn-primary btn-xs" %>
-                    <% end %>
-                  </td>
-                  <td>
-                    <%= form_for fr , :html => { :class => 'form-inline' } do |f| %>
-                      <%= f.hidden_field :status, value: 'rejected' %>
-                      <%= f.submit "Not now", class: "button btn btn-xs" %>
-                    <% end %>
-                  </td>
-                </tr>
-              </table> 
-            </div>
-          </div>
-
-      <% end %>
-      <% else %>
-          <p> No new requests </p>
-      <% end %>
-    </div>
-  </div>
 
     <div class="panel panel-primary">
       <div class="panel-heading">
         <h3 class="panel-title"> Send Friendship Requests to </h3>
       </div>
       <div class="panel-body">
-  
+
         <% if @users_to_send_frienship_requests %>
 
           <% @users_to_send_frienship_requests.each do |user| %>
 
             <div class="tweet">
 
-              <div class="well well-sm"> 
+              <div class="well well-sm">
                 <div id="container">
                   <div id="left">
-                     <%= image_tag user.profile_img_url(:xsmall).to_s if user.profile_img_url %> 
-                     <strong><%= user.name %></strong> user since  <%= time_ago_in_words(user.created_at) %> 
+                     <%= image_tag user.profile_img_url(:xsmall).to_s if user.profile_img_url %>
+                     <strong><%= user.name %></strong> user since  <%= time_ago_in_words(user.created_at) %>
 
                   </div>
-                  <div id="right"> 
+                  <div id="right">
                     <%=link_to friendship_requests_path( :receiver_user_id => user) , :method => :post do %>
                         <i class="fa fa-user"> Add friend </i>
                     <% end %>

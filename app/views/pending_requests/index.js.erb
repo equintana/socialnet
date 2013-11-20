@@ -1,0 +1,6 @@
+<% if !@pending_requests.empty? %>
+  $("#hidden_requests ul").replaceWith("<%= j(render('pending_requests/pending', pending_requests: @pending_requests)) %>");
+<% else %>
+	$("#hidden_requests ul").replaceWith("<ul><li>You don't have any friend Request</li></ul>");
+<% end %>
+$("#hidden_requests").slideToggle();

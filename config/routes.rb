@@ -1,11 +1,13 @@
 Socialnet::Application.routes.draw do
 
+  get "pending_requests/index"
+
   devise_for :users
 
   resources :users, only:[ :show ]
   resources :tweets
   resources :friendship_requests, except:[:new, :edit, :show ]
-
+  resources :pending_requests, only: [:index]
   root :to => "pages#index"
 
   # The priority is based upon order of creation:

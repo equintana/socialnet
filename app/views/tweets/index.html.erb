@@ -18,12 +18,12 @@
       </div>
       <div class="panel-body">
 
-      <div class="well" id="write_tweet">
+      <div class="well well-sm" id="write_tweet">
         <h4>Write a new Tweet</h4>
-        <%= form_for @tweet, :html => { :class => 'form-horizontal' }, remote: true do |f| %>
+        <%= form_for @tweet, remote: true do |f| %>
           <div class="form-group">
             <div class="controls">
-              <%= f.text_area :tweet, size: "50x4", :class => "form-control" %>
+              <%= f.text_area :tweet, size: "40x4", :class => "form-control" %>
             </div>
           </div>
 
@@ -33,8 +33,8 @@
           </div>
 
           <div class="form-group">
-            <%= f.label :remote_image_url, "paste an image URL" %>
             <%= f.text_field :remote_image_url %>
+            <%= f.label :remote_image_url, "or paste an image URL" %>
           </div>
 
           <div class="form-group">
@@ -53,13 +53,14 @@
               <%= link_to user_path(tweet.user), :method => :get do %>
                  <%= tweet.user.name %>
               <% end %>
-              &nbsp;
-              <span class="badge"><%= time_ago_in_words(tweet.created_at) %></span>
+              <span class="badge" style="float:right"><%= time_ago_in_words(tweet.created_at) %></span>
 
-              <p>
-                <%= image_tag tweet.image_url(:xsmall).to_s if tweet.image_url %>
-                <%= auto_link tweet.tweet %>
-              </p>
+              <div class="image_tweet">
+                <p>
+                  <%= auto_link tweet.tweet %>
+                  <%= image_tag tweet.image_url(:xsmall).to_s if tweet.image_url %>
+                </p>
+              </div>
               <div class="options">
                 <%= link_to tweet_path(tweet) do %>
                   <i class="fa fa-eye"></i>
