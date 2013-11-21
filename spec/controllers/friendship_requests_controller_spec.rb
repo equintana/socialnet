@@ -11,18 +11,18 @@ describe FriendshipRequestsController do
       end
 
       it "should redirect to sing_in when try to see its friendship requests" do
-        get :index 
-        response.should redirect_to new_user_session_path 
+        get :index
+        response.should redirect_to new_user_session_path
       end
 
       it "should redirect to sing_in when try to send a friendship requests" do
         post :create, :friendship_request => friendship_request
-        response.should redirect_to new_user_session_path 
+        response.should redirect_to new_user_session_path
       end
 
       it "should redirect to sing_in when try to respond a friendship requests received" do
         put :update, :id => friendship_request
-        response.should redirect_to new_user_session_path 
+        response.should redirect_to new_user_session_path
       end
     end
   end
@@ -37,7 +37,7 @@ describe FriendshipRequestsController do
     describe "on POST to #create" do
       context "when valid data" do
         let(:friend) { FactoryGirl.create(:user) }
-       
+
         it "send a friendship requests to selected friend" do
           expect{
             post :create, receiver_user_id: friend.id
@@ -53,6 +53,15 @@ describe FriendshipRequestsController do
           post :create, receiver_user_id: friend.id
           response.should redirect_to(friendship_requests_path)
         end
+
+        it "sends a mail to the requested user" do
+          # the and_return(double("UserNotifications", :deliver => true)) is needed
+          # because should_receive(:friend_request_notification) is apparentely replaced
+          # with a mock method so it returns nil cause the strange
+          # undefined method deliver for nilClass.
+          UserNotifications.should_receive(:friend_request_notification).with(friend, subject.current_user).and_return(double("UserNotifications", :deliver => true))
+          post :create, receiver_user_id: friend.id
+        end
       end
 
       context "when invalid data" do
@@ -64,9 +73,9 @@ describe FriendshipRequestsController do
     end
 
     describe "on GET to #index" do
-      let!(:not_friend_1) { FactoryGirl.create(:user) } 
+      let!(:not_friend_1) { FactoryGirl.create(:user) }
       let!(:not_friend_2) { FactoryGirl.create(:user) }
-      let!(:not_friend_3) { FactoryGirl.create(:user) } 
+      let!(:not_friend_3) { FactoryGirl.create(:user) }
 
       before do
         FactoryGirl.create(:friendship_request, sender_user: subject.current_user, receiver_user: not_friend_1)
@@ -90,7 +99,7 @@ describe FriendshipRequestsController do
     end
 
     describe "on PUT to #update" do
-      let!(:not_friend_1) { FactoryGirl.create(:user) } 
+      let!(:not_friend_1) { FactoryGirl.create(:user) }
 
       before do
         @friendship_request = FactoryGirl.create(:friendship_request, sender_user: subject.current_user, receiver_user: not_friend_1)

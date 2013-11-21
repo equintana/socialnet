@@ -1,5 +1,6 @@
 <% if @tweet %>
-  $("<%= j(render('tweets/tweet', tweet: @tweet)) %>").insertAfter("#write_tweet")
+  $("<%= j(render('tweets/tweet', tweet: @tweet)) %>").insertAfter("#write_tweet");
+  $("#new_tweet")[0].reset();
 <% else %>
-  $("<div>There was an error saving your tweet. Please try again</div>").insertAfter("#write_tweet")
+  $("<div>There was an error saving your tweet. Please try again</div>").insertAfter("#write_tweet");
 <% end %>

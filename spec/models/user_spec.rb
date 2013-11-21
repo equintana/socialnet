@@ -9,11 +9,11 @@ describe User, "associations" do
 end
 
 describe User, "instance methods" do
-  let(:current_user) { FactoryGirl.create(:user) } 
-  
+  let(:current_user) { FactoryGirl.create(:user) }
+
   context "#not_friends" do
-    let!(:friend) { FactoryGirl.create(:user) } 
-    let!(:not_friend) { FactoryGirl.create(:user) } 
+    let!(:friend) { FactoryGirl.create(:user) }
+    let!(:not_friend) { FactoryGirl.create(:user) }
 
     before do
       FactoryGirl.create(:friendship, user: current_user, friend: friend)
@@ -34,9 +34,9 @@ describe User, "instance methods" do
   end
 
   context "#users_to_send_frienship_requests" do
-    let!(:not_friend_1) { FactoryGirl.create(:user) } 
+    let!(:not_friend_1) { FactoryGirl.create(:user) }
     let!(:not_friend_2) { FactoryGirl.create(:user) }
-    let!(:not_friend_3) { FactoryGirl.create(:user) } 
+    let!(:not_friend_3) { FactoryGirl.create(:user) }
 
     before do
       @friendship_request = FactoryGirl.create(:friendship_request, sender_user: current_user, receiver_user: not_friend_1)
@@ -45,7 +45,7 @@ describe User, "instance methods" do
     it "users who i can send friendship requests" do
       current_user.users_to_send_frienship_requests.should include(not_friend_2, not_friend_3)
     end
-    
+
     it "users who i can not send friendship requests" do
       current_user.users_to_send_frienship_requests.should_not include(not_friend_1)
     end
@@ -68,9 +68,9 @@ describe User, "instance methods" do
   end
 
   context "#pending_incoming_requests" do
-    let!(:not_friend_1) { FactoryGirl.create(:user) } 
+    let!(:not_friend_1) { FactoryGirl.create(:user) }
     let!(:not_friend_2) { FactoryGirl.create(:user) }
-    
+
     before do
       FactoryGirl.create(:friendship_request, sender_user: not_friend_1, receiver_user: current_user)
       FactoryGirl.create(:friendship_request, sender_user: not_friend_2, receiver_user: current_user, status: 'accepted')
@@ -82,7 +82,7 @@ describe User, "instance methods" do
   end
 
   context "#all_friends" do
-    let!(:friend_1) { FactoryGirl.create(:user) } 
+    let!(:friend_1) { FactoryGirl.create(:user) }
     let!(:friend_2) { FactoryGirl.create(:user) }
     let!(:not_friend) { FactoryGirl.create(:user) }
 
@@ -93,7 +93,7 @@ describe User, "instance methods" do
 
     it "include my friends" do
       current_user.all_friends.should include(friend_1, friend_2)
-    end 
+    end
 
     it "not include user who are not friends" do
       current_user.all_friends.should_not include(not_friend)
@@ -107,7 +107,7 @@ describe User, "instance methods" do
     let(:my_tweet){  FactoryGirl.create(:tweet, user: current_user) }
     let(:friend_tweet){  FactoryGirl.create(:tweet, user: friend) }
     let(:not_friend_tweet){  FactoryGirl.create(:tweet, user: not_friend) }
-    
+
     before do
       FactoryGirl.create(:friendship, user: current_user, friend: friend)
     end

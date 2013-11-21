@@ -13,9 +13,9 @@ describe TweetsController, "Actions" do
 
 			before :each do
         FactoryGirl.create(:friendship, user:  subject.current_user, friend: friend)
-        @my_tw = FactoryGirl.create(:tweet, tweet: "my tweet", user: subject.current_user) 
-        @friend_tw = FactoryGirl.create(:tweet, tweet: "friend tweet", user: friend) 
-        @not_friend_tw = FactoryGirl.create(:tweet, tweet: "not friend tweet", user: not_friend) 
+        @my_tw = FactoryGirl.create(:tweet, tweet: "my tweet", user: subject.current_user)
+        @friend_tw = FactoryGirl.create(:tweet, tweet: "friend tweet", user: friend)
+        @not_friend_tw = FactoryGirl.create(:tweet, tweet: "not friend tweet", user: not_friend)
 			end
 
 			it "is logged in" do
@@ -91,7 +91,7 @@ describe TweetsController, "Actions" do
 
 				it "have errors" do
 					post :create, tweet: {}
-					flash[:errors].should_not be_nil
+					flash[:error].should_not be_nil
 				end
 			end
 		end

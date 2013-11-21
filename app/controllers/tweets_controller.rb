@@ -16,9 +16,11 @@ class TweetsController < ApplicationController
 		@tweet = current_user.tweets.build(params[:tweet])
 
     if @tweet.save
-      redirect_to action: :index, notice: 'Your tweet was saved' unless request.xhr?
+    	flash[:notice] = 'Your tweet was saved'
+      	redirect_to action: :index unless request.xhr?
     else
-      render action: "new" unless request.xhr?
+    	flash[:error] = 'We could not save yor tweet'
+      	render action: "new" unless request.xhr?
     end
 
 		# respond_to do |format|
