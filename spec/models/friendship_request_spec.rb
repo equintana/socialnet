@@ -15,12 +15,6 @@ describe FriendshipRequest do
       friendship_request_repeated = FactoryGirl.build(:friendship_request, sender_user: @sender_user, receiver_user: @receiver_user)
       friendship_request_repeated.should_not be_valid
     end
-    
-    it "does not send it if exist one 'accepted' to same friend" do
-      friendship_request_accepted = FactoryGirl.create(:friendship_request, status: 'accepted', sender_user: @sender_user, receiver_user: @receiver_user)
-      friendship_request_resend = FactoryGirl.build(:friendship_request, sender_user: @sender_user, receiver_user: @receiver_user)
-      friendship_request_resend.should_not be_valid
-    end
 
     it "send it if exist one to same friend but it was rejected" do
       friendship_request = FactoryGirl.create(:friendship_request, status: 'rejected', sender_user: @sender_user, receiver_user: @receiver_user)

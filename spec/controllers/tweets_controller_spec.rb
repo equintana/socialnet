@@ -118,10 +118,9 @@ describe TweetsController, "Actions" do
 			end
 
 			context "with invalid tweet ID" do
-				it "throws not found exception" do
-					expect{
-					  get :edit, id: 0
-					}.to raise_error(ActiveRecord::RecordNotFound)
+				it "shows 404" do
+				  get :edit, id: 0
+					response.response_code.should == 404
 				end
 			end
 		end
@@ -149,10 +148,9 @@ describe TweetsController, "Actions" do
 			end
 
 			context "with an invalid tweet ID or a tweet not mine" do
-				it "throws not found exception" do
-					expect{
-					  get :show, id: 0
-					}.to raise_error(ActiveRecord::RecordNotFound)
+				it "show 404" do
+					get :show, id: 0
+					response.response_code.should == 404
 				end
 			end
 		end
@@ -229,9 +227,8 @@ describe TweetsController, "Actions" do
 
 			context "with an invalid id" do
 				it "shows 404" do
-					expect{
 					  delete :destroy, id: 0
-					}.to raise_error(ActiveRecord::RecordNotFound)
+						response.response_code.should == 404
 				end
 			end
 		end

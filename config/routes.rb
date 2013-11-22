@@ -8,6 +8,7 @@ Socialnet::Application.routes.draw do
   resources :tweets
   resources :friendship_requests, except:[:new, :edit, :show ]
   resources :pending_requests, only: [:index]
+  resources :friendships, only:[ :destroy ]
   root :to => "pages#index"
 
   # The priority is based upon order of creation:

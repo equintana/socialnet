@@ -32,13 +32,26 @@
         <h3 class="panel-title">Friends</h3>
       </div>
       <div class="panel-body">
-        <% @user.all_friends.each do |user| %>
+        <% @user.all_friendships.each do |friendship| %>
 
           <div class="tweet">
             <div class="well well-sm">
-              <%= link_to user_path(user), :method => :get do %>
-                 <%= user.name %> 
-              <% end %>
+              
+              <% if friendship.user == @user %>
+                <%= link_to user_path(friendship.friend), :method => :get do %>
+                  <%= friendship.friend.name %>
+                <% end %>
+              <% else %>
+                <%= link_to user_path(friendship.user), :method => :get do %>
+                  <%= friendship.user.name %>
+                <% end %>
+              <%end%> 
+              <% if  @user == current_user %>
+                <%=link_to friendship_path(friendship) , :method => :delete, :class => "btn btn-danger btn-xs" do %>
+                    Unfriend 
+                <% end %>
+              <%end%> 
+             
             </div>
           </div>
 

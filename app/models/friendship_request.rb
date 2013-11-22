@@ -22,7 +22,7 @@ class FriendshipRequest < ActiveRecord::Base
 
 
   def disallow_resend_friendship_request
-     request = FriendshipRequest.by_status('pending','accepted').by_sender_user(self.sender_user).by_receiver_user(self.receiver_user).first
+     request = FriendshipRequest.by_status('pending').by_sender_user(self.sender_user).by_receiver_user(self.receiver_user).first
     if request && request.id != self.id
       errors.add(:sender_user, "You had send already Friendship Request or he/her has accepted you")
     end

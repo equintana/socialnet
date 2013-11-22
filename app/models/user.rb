@@ -31,8 +31,8 @@ class User < ActiveRecord::Base
   end
 
   def users_to_send_frienship_requests
-    users_i_have_sent_requests = FriendshipRequest.by_sender_user(self).by_status('pending', 'accepted').map(&:receiver_user)
-    users_who_had_sent_requests_to_me = FriendshipRequest.by_receiver_user(self).by_status('pending','accepted').map(&:sender_user)
+    users_i_have_sent_requests = FriendshipRequest.by_sender_user(self).by_status('pending').map(&:receiver_user)
+    users_who_had_sent_requests_to_me = FriendshipRequest.by_receiver_user(self).by_status('pending').map(&:sender_user)
 
     self.not_friends - users_i_have_sent_requests - users_who_had_sent_requests_to_me
   end
@@ -50,4 +50,8 @@ class User < ActiveRecord::Base
     self.friends + self.inverse_friends
   end
 
+   def all_friendships
+    self.friendships + self.inverse_friendships
+  end
+  
 end
